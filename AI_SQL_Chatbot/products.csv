@@ -1,0 +1,101 @@
+product_id,category,product_name,price
+1,Electronics,Smartwatch,307.6
+2,Toys,Action Figure,98.36
+3,Home Appliances,Washing Machine,355.62
+4,Clothing,Sneakers,151.04
+5,Electronics,Laptop,113.79
+6,Toys,Building Blocks,242.33
+7,Clothing,Jeans,279.97
+8,Toys,Board Game,7.16
+9,Home Appliances,Vacuum Cleaner,274.2
+10,Electronics,Smartwatch,449.8
+11,Books,Non-Fiction Book,191.36
+12,Books,Fiction Book,388.23
+13,Clothing,Jacket,54.49
+14,Toys,Doll,270.81
+15,Toys,Doll,99.79
+16,Clothing,Jacket,385.35
+17,Toys,Puzzle,357.3
+18,Toys,Puzzle,476.16
+19,Toys,Puzzle,101.04
+20,Clothing,Sneakers,250.12
+21,Clothing,Jacket,314.9
+22,Toys,Puzzle,100.66
+23,Toys,Building Blocks,208.89
+24,Clothing,Dress,80.03
+25,Clothing,Jacket,116.16
+26,Home Appliances,Vacuum Cleaner,433.22
+27,Home Appliances,Air Conditioner,302.65
+28,Electronics,Laptop,374.96
+29,Electronics,Tablet,455.18
+30,Electronics,Laptop,409.65
+31,Clothing,T-Shirt,282.67
+32,Books,Science Book,484.52
+33,Clothing,Jacket,194.05
+34,Home Appliances,Microwave,481.88
+35,Books,Fiction Book,196.18
+36,Toys,Doll,429.42
+37,Home Appliances,Microwave,139.76
+38,Toys,Doll,499.01
+39,Books,Fiction Book,485.03
+40,Clothing,Jacket,313.34
+41,Toys,Board Game,15.9
+42,Home Appliances,Microwave,29.21
+43,Home Appliances,Washing Machine,49.42
+44,Books,Fiction Book,124.68
+45,Toys,Action Figure,429.71
+46,Books,Non-Fiction Book,104.03
+47,Toys,Building Blocks,33.7
+48,Clothing,Jeans,61.16
+49,Home Appliances,Refrigerator,144.39
+50,Books,Fiction Book,494.08
+51,Electronics,Smartwatch,23.84
+52,Electronics,Smartwatch,182.76
+53,Books,Science Book,498.34
+54,Home Appliances,Microwave,215.1
+55,Clothing,Jeans,434.12
+56,Toys,Action Figure,101.84
+57,Electronics,Laptop,10.8
+58,Home Appliances,Vacuum Cleaner,253.89
+59,Toys,Action Figure,355.49
+60,Books,Fiction Book,467.89
+61,Books,Science Book,283.08
+62,Toys,Doll,14.24
+63,Clothing,Jacket,465.79
+64,Books,History Book,272.14
+65,Electronics,Tablet,71.88
+66,Clothing,Sneakers,36.05
+67,Home Appliances,Vacuum Cleaner,361.43
+68,Clothing,Jacket,467.45
+69,Clothing,Jeans,277.69
+70,Clothing,Jeans,176.24
+71,Home Appliances,Microwave,95.55
+72,Books,History Book,215.29
+73,Clothing,Jacket,249.08
+74,Toys,Board Game,328.9
+75,Toys,Action Figure,56.15
+76,Electronics,Tablet,81.56
+77,Electronics,Headphones,262.94
+78,Electronics,Smartwatch,84.73
+79,Home Appliances,Washing Machine,480.07
+80,Clothing,Sneakers,197.84
+81,Toys,Board Game,10.32
+82,Electronics,Laptop,396.18
+83,Home Appliances,Microwave,168.85
+84,Electronics,Smartwatch,95.48
+85,Electronics,Tablet,208.52
+86,Electronics,Laptop,319.74
+87,Clothing,T-Shirt,446.99
+88,Toys,Puzzle,54.23
+89,Toys,Action Figure,17.18
+90,Electronics,Laptop,192.31
+91,Books,Science Book,81.72
+92,Clothing,Jeans,225.57
+93,Home Appliances,Refrigerator,147.58
+94,Home Appliances,Air Conditioner,220.71
+95,Books,Fiction Book,82.51
+96,Books,Non-Fiction Book,323.79
+97,Books,Biography,205.98
+98,Books,Non-Fiction Book,262.81
+99,Home Appliances,Microwave,152.52
+100,Electronics,Headphones,439.15
