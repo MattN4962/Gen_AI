@@ -1,8 +1,10 @@
 import pandas as pd
 from faker import Faker
 import random
+import gender_guesser.detector as gender
 
 fake = Faker()
+g = gender.Detector()
 
 # Config
 NUM_CUSTOMERS = 1000
@@ -12,11 +14,26 @@ NUM_PRODUCTS = 100
 # Generate Customers
 customers = []
 for i in range(1, NUM_CUSTOMERS + 1):
+    name = fake.name()
+    first_name = name.split()[0]
+    gender = g.get_gender(first_name)
+
+    if gender in ['mostly_male', 'male']:
+        gender = "male"
+    elif gender in ['mostly_female', 'female']:
+        gender = "female"
+    else:
+        gender = 'unknown'
+
     customers.append({
         'customer_id': i,
-        'name': fake.name(),
+        'name': name,
+        'gender': gender,
         'email': fake.email(),
-        'address': fake.address().replace('\n', ', ')
+        'address': fake.address().replace('\n', ', '),
+        'phone': fake.phone_number(),
+        'loyalty_points': round(random.uniform(5, 500),0),
+        'is_Pro': random.choices(["True", "False"])[0]
     })
 customers_df = pd.DataFrame(customers)
 customers_df.to_csv('customers.csv', index=False)
@@ -38,7 +55,7 @@ for i in range(1, NUM_PRODUCTS + 1):
         'product_id': i,
         'category': category,
         'product_name': product_name,
-        'price': round(random.uniform(5.0, 500.0), 2)
+        'price': round(random.uniform(5.0, 100.0), 2)
     })
 products_df = pd.DataFrame(products)
 products_df.to_csv('products.csv', index=False)

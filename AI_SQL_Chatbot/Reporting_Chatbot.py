@@ -3,6 +3,7 @@ import pandas as pd
 from transformers import pipeline
 from dotenv import load_dotenv
 import gradio as gr
+import streamlit as st
 import re
 import os
 from transformers import AutoTokenizer, AutoModelForCausalLM
@@ -10,6 +11,25 @@ from openai import AzureOpenAI
 #This file is just to test the connection and a simple query
 # Database connection configuration
 
+load_dotenv()
+api_version = os.getenv("API_VERSION")
+api_key = os.getenv("API_KEY")
+azure_url = os.getenv("AZURE_URL")
+sql_password = os.getenv("MY_SQL_PASSWORD")
+
+config = {
+    'user': 'root',
+    'password': sql_password,
+    'host': 'localhost',
+    'port': 3306,
+    'database':'Main'
+}
+
+client = AzureOpenAI(
+    api_version=api_version,
+    azure_endpoint=azure_url,
+    api_key=api_key
+)
 
 def get_db_connection():
     try:
@@ -76,7 +96,8 @@ def generate_sql(user_query: str, schema: dict) -> str:
         max_tokens=200,
         model="chatgpt-4o-latest"
     )
-    return response
+    query = re.sub(r"```sql|```", "", response.choices[0].message.content, flags=re.IGNORECASE).strip() 
+    return query
 
 # Executes the SQL query and returns the results as a DataFrame
 def run_SQL_query(sql: str) -> pd.DataFrame:
@@ -107,10 +128,22 @@ def connection_cleanup(conn, cursor):
     print("Database connection closed.")
 
 
-conn, cursor = get_db_connection()
-schema = get_schema()
-test_query = generate_sql("Show me the top selling products for the past 3 months", schema=schema)
+st.title("On-Demand SQL Reporting Bot")
+st.markdown("Type a natural language question to query your database")
 
-query = re.sub(r"```sql|```", "", test_query.choices[0].message.content, flags=re.IGNORECASE).strip() 
-result = run_SQL_query(query)
-print(result)
+user_query = st.text_area("Enter your question")
+if st.button("Run Query"):
+    schema = get_schema()
+    if not schema:
+        st.error("Unable to get schema")
+    else:
+        sql = generate_sql(user_query=user_query, schema=schema)
+        st.code(sql, language="sql")
+        df = run_SQL_query(sql=sql)
+        if not df.empty:
+            st.dataframe(df)
+            st.session_state["last_df"] = df
+        else:
+            st.warning("No results found or unsafe query")
+
+
