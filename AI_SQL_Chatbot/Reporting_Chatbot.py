@@ -17,8 +17,8 @@ config = {
     'database':'Main'
 }
 
-azure_url = 'https://matth-mg5q8qtb-eastus2.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2025-01-01-preview'
-api_key = 'BqH3HdJqIpANvsL6gPmHjgg0dVZN85usdnVqnuEAFGz08JHhdtlBJQQJ99BIACHYHv6XJ3w3AAAAACOGchmC'
+azure_url = ''
+api_key = ''
 api_version = '2024-12-01-preview'
 # Load the language model
 
