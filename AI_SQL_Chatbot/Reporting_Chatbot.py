@@ -9,7 +9,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from openai import AzureOpenAI
 #This file is just to test the connection and a simple query
 # Database connection configuration
-
+#some comment
 
 def get_db_connection():
     try:
