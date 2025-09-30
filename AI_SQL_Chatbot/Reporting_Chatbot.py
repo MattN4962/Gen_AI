@@ -9,21 +9,6 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from openai import AzureOpenAI
 #This file is just to test the connection and a simple query
 # Database connection configuration
-config = {
-    'user': 'root',
-    'host': 'localhost',
-    'port': 3306,
-    'database':'Main'
-}
-
-
-# Load the language model
-
-client = AzureOpenAI(
-    api_version=api_version,
-    azure_endpoint=azure_url
-    
-)
 
 
 def get_db_connection():
