@@ -17,9 +17,7 @@ config = {
     'database':'Main'
 }
 
-azure_url = ''
-api_key = ''
-api_version = '2024-12-01-preview'
+
 # Load the language model
 
 client = AzureOpenAI(
