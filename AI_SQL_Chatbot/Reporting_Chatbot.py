@@ -22,8 +22,8 @@ config = {
 
 client = AzureOpenAI(
     api_version=api_version,
-    azure_endpoint=azure_url,
-    api_key=api_key
+    azure_endpoint=azure_url
+    
 )
 
 
