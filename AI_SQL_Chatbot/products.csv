@@ -1,101 +1,101 @@
 product_id,category,product_name,price
-1,Books,Biography,37.58
-2,Home Appliances,Microwave,10.98
-3,Electronics,Headphones,46.19
-4,Books,Biography,17.87
-5,Home Appliances,Air Conditioner,22.73
-6,Home Appliances,Refrigerator,31.94
-7,Books,History Book,22.01
-8,Clothing,Sneakers,13.43
-9,Electronics,Laptop,83.2
-10,Home Appliances,Air Conditioner,53.63
-11,Clothing,Sneakers,67.97
-12,Electronics,Headphones,53.8
-13,Books,Biography,74.29
-14,Electronics,Laptop,44.99
-15,Clothing,Sneakers,54.07
-16,Home Appliances,Air Conditioner,64.85
-17,Books,Fiction Book,17.75
-18,Clothing,Sneakers,44.17
-19,Books,Science Book,10.8
-20,Electronics,Smartwatch,39.45
-21,Books,Fiction Book,79.17
-22,Books,Non-Fiction Book,48.32
-23,Toys,Action Figure,66.07
-24,Clothing,Jacket,59.21
-25,Electronics,Tablet,40.33
-26,Books,Fiction Book,77.35
-27,Clothing,Sneakers,42.45
-28,Home Appliances,Refrigerator,83.73
-29,Books,Science Book,6.54
-30,Home Appliances,Washing Machine,5.55
-31,Toys,Building Blocks,42.28
-32,Clothing,T-Shirt,47.91
-33,Home Appliances,Washing Machine,19.27
-34,Toys,Puzzle,79.27
-35,Toys,Action Figure,36.19
-36,Toys,Action Figure,65.61
-37,Books,Science Book,32.74
-38,Electronics,Laptop,72.08
-39,Clothing,Dress,45.59
-40,Toys,Doll,9.13
-41,Toys,Building Blocks,16.28
-42,Clothing,Dress,58.59
-43,Clothing,Sneakers,48.03
-44,Books,Science Book,9.29
-45,Electronics,Smartwatch,16.7
-46,Books,History Book,30.49
-47,Toys,Puzzle,57.63
-48,Clothing,Sneakers,13.62
-49,Toys,Action Figure,17.52
-50,Electronics,Smartwatch,63.26
-51,Home Appliances,Microwave,37.79
-52,Books,History Book,8.39
-53,Books,Non-Fiction Book,98.43
-54,Electronics,Smartphone,41.65
-55,Home Appliances,Vacuum Cleaner,21.09
-56,Clothing,Jeans,15.85
-57,Toys,Building Blocks,58.24
-58,Books,History Book,21.56
-59,Toys,Board Game,96.19
-60,Books,Fiction Book,45.84
-61,Clothing,Jeans,67.17
-62,Home Appliances,Washing Machine,55.77
-63,Clothing,Dress,56.06
-64,Books,Biography,72.61
-65,Electronics,Smartwatch,28.55
-66,Clothing,T-Shirt,78.34
-67,Clothing,Jacket,72.77
-68,Toys,Action Figure,12.65
-69,Clothing,Jacket,25.49
-70,Clothing,Jeans,81.77
-71,Electronics,Tablet,5.32
-72,Electronics,Smartwatch,12.21
-73,Clothing,Jacket,14.23
-74,Books,History Book,52.93
-75,Books,Science Book,5.36
-76,Clothing,Sneakers,63.6
-77,Toys,Building Blocks,21.03
-78,Books,Biography,70.35
-79,Electronics,Smartwatch,11.64
-80,Clothing,T-Shirt,68.54
-81,Clothing,Sneakers,8.95
-82,Books,Non-Fiction Book,86.25
-83,Clothing,Dress,24.38
-84,Home Appliances,Vacuum Cleaner,79.28
-85,Clothing,T-Shirt,65.12
-86,Clothing,T-Shirt,12.92
-87,Home Appliances,Washing Machine,86.13
-88,Electronics,Smartwatch,79.81
-89,Home Appliances,Refrigerator,11.52
-90,Electronics,Laptop,98.05
-91,Home Appliances,Microwave,88.55
-92,Electronics,Tablet,69.23
-93,Books,Biography,92.78
-94,Books,Science Book,73.09
-95,Toys,Board Game,16.02
-96,Home Appliances,Washing Machine,58.25
-97,Books,Fiction Book,85.19
-98,Toys,Puzzle,50.65
-99,Clothing,Sneakers,35.2
-100,Home Appliances,Washing Machine,8.39
+1,Electronics,Smartwatch,34.74
+2,Home Appliances,Microwave,52.59
+3,Clothing,Jeans,48.68
+4,Home Appliances,Microwave,14.23
+5,Electronics,Laptop,21.18
+6,Home Appliances,Refrigerator,67.06
+7,Electronics,Laptop,20.85
+8,Toys,Puzzle,17.83
+9,Toys,Action Figure,75.16
+10,Electronics,Headphones,12.17
+11,Clothing,Sneakers,85.04
+12,Electronics,Headphones,98.95
+13,Clothing,Sneakers,19.65
+14,Electronics,Laptop,98.99
+15,Toys,Puzzle,69.92
+16,Home Appliances,Vacuum Cleaner,29.74
+17,Electronics,Tablet,44.22
+18,Toys,Action Figure,61.88
+19,Books,Biography,32.94
+20,Toys,Board Game,71.46
+21,Home Appliances,Washing Machine,92.8
+22,Books,History Book,11.29
+23,Electronics,Smartwatch,66.69
+24,Home Appliances,Air Conditioner,24.19
+25,Clothing,Jeans,96.06
+26,Home Appliances,Vacuum Cleaner,97.14
+27,Electronics,Smartphone,60.58
+28,Home Appliances,Microwave,23.99
+29,Toys,Doll,56.55
+30,Clothing,Jeans,78.27
+31,Toys,Action Figure,33.84
+32,Electronics,Headphones,41.85
+33,Home Appliances,Refrigerator,40.16
+34,Toys,Action Figure,49.24
+35,Clothing,Sneakers,42.17
+36,Books,Fiction Book,76.64
+37,Clothing,Sneakers,84.82
+38,Electronics,Smartwatch,21.9
+39,Books,Biography,51.51
+40,Electronics,Smartwatch,58.47
+41,Books,Non-Fiction Book,21.64
+42,Home Appliances,Washing Machine,45.35
+43,Toys,Puzzle,38.52
+44,Home Appliances,Washing Machine,69.21
+45,Clothing,Jacket,76.75
+46,Toys,Action Figure,87.27
+47,Electronics,Tablet,52.56
+48,Home Appliances,Refrigerator,65.54
+49,Books,History Book,13.21
+50,Toys,Doll,81.35
+51,Books,Biography,17.73
+52,Electronics,Smartphone,12.49
+53,Toys,Board Game,94.2
+54,Clothing,Dress,21.1
+55,Home Appliances,Refrigerator,38.83
+56,Books,Fiction Book,83.54
+57,Clothing,Dress,12.0
+58,Home Appliances,Vacuum Cleaner,91.49
+59,Electronics,Tablet,37.64
+60,Books,Science Book,27.63
+61,Toys,Board Game,33.45
+62,Electronics,Laptop,24.94
+63,Toys,Building Blocks,87.19
+64,Books,History Book,84.64
+65,Home Appliances,Air Conditioner,69.3
+66,Books,Fiction Book,96.85
+67,Toys,Board Game,29.58
+68,Toys,Building Blocks,81.4
+69,Books,Biography,14.74
+70,Toys,Board Game,45.0
+71,Toys,Action Figure,62.23
+72,Electronics,Smartwatch,85.69
+73,Home Appliances,Washing Machine,39.9
+74,Home Appliances,Refrigerator,12.92
+75,Toys,Puzzle,18.44
+76,Toys,Doll,63.36
+77,Electronics,Tablet,56.45
+78,Toys,Building Blocks,23.99
+79,Toys,Doll,48.72
+80,Toys,Doll,71.36
+81,Clothing,Jeans,77.81
+82,Clothing,T-Shirt,67.02
+83,Electronics,Smartwatch,68.0
+84,Clothing,Dress,88.62
+85,Electronics,Headphones,70.02
+86,Electronics,Laptop,8.05
+87,Toys,Doll,61.19
+88,Toys,Puzzle,14.05
+89,Toys,Action Figure,41.02
+90,Toys,Action Figure,88.59
+91,Home Appliances,Washing Machine,69.53
+92,Clothing,T-Shirt,95.52
+93,Books,Science Book,21.77
+94,Home Appliances,Washing Machine,41.35
+95,Books,History Book,56.05
+96,Home Appliances,Air Conditioner,88.99
+97,Clothing,Sneakers,64.41
+98,Home Appliances,Refrigerator,97.11
+99,Toys,Board Game,67.04
+100,Home Appliances,Refrigerator,66.58

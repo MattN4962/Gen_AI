@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup
+import markdown
 import mysql.connector
 import pandas as pd
 from transformers import pipeline
@@ -6,6 +8,8 @@ import gradio as gr
 import streamlit as st
 import re
 import os
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
+from reportlab.lib.styles import getSampleStyleSheet
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from openai import AzureOpenAI
 #This file is just to test the connection and a simple query
@@ -85,7 +89,7 @@ def generate_sql(user_query: str, schema: dict) -> str:
             {
                 "role":"system",
                 "content":f"""You will take the user query in natural language and produce a a SINGLE SQL query using only SELECT statements using MySQLServer syntax."
-                " This is the table schema: {schema}"""
+                " This is the table schema: {schema}, and the field is_Pro is either True or False """
             },
             {
                 "role":"user",
@@ -127,6 +131,43 @@ def connection_cleanup(conn, cursor):
     conn.close()
     print("Database connection closed.")
 
+def generate_insights(df: pd.DataFrame, user_question: str):
+    if df.empty:
+        return "No query results so no insights report can be given"
+    data_sample = df.head(30).to_markdown(index=False)
+
+    prompt = (
+        f"You are a marketing analyst. The user asked: '{user_question}'.\n"
+        f"Here are the first rows of the query results:\n{data_sample}\n\n"
+        "Provide a concise marketing analysis and suggestions based on these results. "
+        "Focus on actionable strategies such as promotions, customer segmentation, "
+        "or product opportunities. Write in clear natural language."
+    )
+    response = client.chat.completions.create(
+        messages=[
+            {"role": "system", "content": "You are an expert marketing analyst."},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.6,
+        max_tokens=1000,
+        model="chatgpt-4o-latest"
+    )
+
+    return response.choices[0].message.content.strip()
+
+def generate_report(df: pd.DataFrame, insights: str, filename: str):
+    doc = SimpleDocTemplate(filename)
+    styles = getSampleStyleSheet()
+    flow = [Paragraph("SQL Query Results Report", styles['Title']), Spacer(1, 12)]
+
+    if not df.empty:
+        data = [df.columns.tolist()] + df.values.tolist()
+        flow.append(Paragraph("Table Data", styles["Heading2"]))
+        flow.append(Table(data)) 
+    else:
+        flow.append(Paragraph("No Table Data Returned", styles["Normal"]))
+    
+    doc.build(flow)
 
 st.title("On-Demand SQL Reporting Bot")
 st.markdown("Type a natural language question to query your database")
@@ -145,5 +186,21 @@ if st.button("Run Query"):
             st.session_state["last_df"] = df
         else:
             st.warning("No results found or unsafe query")
+
+if 'last_df' in st.session_state and not st.session_state['last_df'].empty:
+    if st.button("Generate Marketing Report"):
+        # 1. Get natural language analysis
+        insights = generate_insights(st.session_state['last_df'], user_query)
+        st.session_state('insights')
+        st.markdown(insights)
+
+        # 2. Create PDF with insights + table
+        pdf_path = "marketing_report.pdf"
+        generate_report(st.session_state['last_df'], insights, pdf_path)
+
+        # 3. Allow download
+        with open(pdf_path, "rb") as f:
+            st.download_button("Download Marketing Report", f,
+                               file_name="marketing_report.pdf")
 
 

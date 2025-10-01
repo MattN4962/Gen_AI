@@ -33,7 +33,7 @@ for i in range(1, NUM_CUSTOMERS + 1):
         'address': fake.address().replace('\n', ', '),
         'phone': fake.phone_number(),
         'loyalty_points': round(random.uniform(5, 500),0),
-        'is_Pro': random.choices(["True", "False"])[0]
+        'is_Pro': random.choices([True, False])[0]
     })
 customers_df = pd.DataFrame(customers)
 customers_df.to_csv('customers.csv', index=False)
