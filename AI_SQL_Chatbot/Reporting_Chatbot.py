@@ -155,7 +155,7 @@ def generate_insights(df: pd.DataFrame, user_question: str):
 
     return response.choices[0].message.content.strip()
 
-def generate_report(df: pd.DataFrame, insights: str, filename: str):
+def generate_report(df: pd.DataFrame, filename: str):
     doc = SimpleDocTemplate(filename)
     styles = getSampleStyleSheet()
     flow = [Paragraph("SQL Query Results Report", styles['Title']), Spacer(1, 12)]
@@ -214,7 +214,7 @@ if st.session_state['last_df'] is not None and not st.session_state['last_df'].e
 
         # 2. Create PDF with insights + table
         pdf_path = "marketing_report.pdf"
-        generate_report(st.session_state['last_df'], insights, pdf_path)
+        generate_report(st.session_state['last_df'], pdf_path)
         with open(pdf_path, "rb") as f:
             st.session_state["report_bytes"] = f.read()
 
