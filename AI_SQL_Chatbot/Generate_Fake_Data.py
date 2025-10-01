@@ -68,7 +68,7 @@ for i in range(1, NUM_ORDERS + 1):
         'customer_id': random.randint(1, NUM_CUSTOMERS),
         'product_id': random.randint(1, NUM_PRODUCTS),
         'quantity': random.randint(1, 10),
-        'order_date': fake.date_this_year()
+        'order_date': fake.date_between("1/1/2023",  )
     })
 orders_df = pd.DataFrame(orders)
 orders_df.to_csv('orders.csv', index=False)
