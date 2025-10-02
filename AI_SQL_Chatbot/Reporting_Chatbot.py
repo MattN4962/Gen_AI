@@ -12,6 +12,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
 from reportlab.lib.styles import getSampleStyleSheet
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from openai import AzureOpenAI
+import pyodbc
 #This file is just to test the connection and a simple query
 # Database connection configuration
 
@@ -20,6 +21,8 @@ api_version = os.getenv("API_VERSION")
 api_key = os.getenv("API_KEY")
 azure_url = os.getenv("AZURE_URL")
 sql_password = os.getenv("MY_SQL_PASSWORD")
+azure_server = os.getenv("AZURE_SYNAPSE_SERVER")
+azure_db = os.getenv("AZURE_SYNAPSE_DB")
 
 config = {
     'user': 'root',
@@ -29,6 +32,16 @@ config = {
     'database':'Main'
 }
 
+conn_string = (
+    "Driver={ODBC Driver 18 for SQL Server};"
+    f"Server=tcp:{azure_server},1433;"
+    f"Database={azure_db};"
+    "Encrypt=yes;"
+    "TrustServerCertificate=no;"
+    "Connection Timeout=30;"
+    "Authentication=ActiveDirectoryDefault;"
+)
+
 client = AzureOpenAI(
     api_version=api_version,
     azure_endpoint=azure_url,
@@ -37,7 +50,7 @@ client = AzureOpenAI(
 
 def get_db_connection():
     try:
-        conn = mysql.connector.connect(**config)
+        conn = pyodbc.connect(conn_string)
         cursor = conn.cursor(dictionary=True)
         print("Database connection established.")
         return conn, cursor
@@ -168,60 +181,61 @@ def generate_report(df: pd.DataFrame, filename: str):
         flow.append(Paragraph("No Table Data Returned", styles["Normal"]))
     
     doc.build(flow)
+get_db_connection()
 
-st.title("On-Demand SQL Reporting Bot")
-st.markdown("Type a natural language question to query your database")
+# st.title("On-Demand SQL Reporting Bot")
+# st.markdown("Type a natural language question to query your database")
 
-st.session_state.setdefault("last_df", None)
-st.session_state.setdefault("insighs", None)
-st.session_state.setdefault("reporting_bytes", None)
+# st.session_state.setdefault("last_df", None)
+# st.session_state.setdefault("insighs", None)
+# st.session_state.setdefault("reporting_bytes", None)
 
-user_query = st.text_area("Enter your question")
+# user_query = st.text_area("Enter your question")
 
-if st.button("Run Query"):
-    schema = get_schema()
-    if not schema:
-        st.error("Unable to get schema")
-    else:
-        sql = generate_sql(user_query=user_query, schema=schema)
-        st.code(sql, language="sql")
+# if st.button("Run Query"):
+#     schema = get_schema()
+#     if not schema:
+#         st.error("Unable to get schema")
+#     else:
+#         sql = generate_sql(user_query=user_query, schema=schema)
+#         st.code(sql, language="sql")
         
-        df = run_SQL_query(sql=sql)
-        if not df.empty:
-            st.session_state["last_df"] = df
-            st.session_state["insights"] = None
-            st.session_state["report_bytes"] = None
-        else:
-            st.warning("No results found or unsafe query")
+#         df = run_SQL_query(sql=sql)
+#         if not df.empty:
+#             st.session_state["last_df"] = df
+#             st.session_state["insights"] = None
+#             st.session_state["report_bytes"] = None
+#         else:
+#             st.warning("No results found or unsafe query")
 
-if st.session_state['last_df'] is not None and not st.session_state['last_df'].empty:
-    st.subheader("Query Results")
-    st.dataframe(st.session_state["last_df"])
+# if st.session_state['last_df'] is not None and not st.session_state['last_df'].empty:
+#     st.subheader("Query Results")
+#     st.dataframe(st.session_state["last_df"])
 
-    #Table download
-    csv_data = st.session_state["last_df"].to_csv(index=False, encoding="utf-8")
-    st.download_button(
-        "Download Table Data (CSV)",
-        csv_data,
-        file_name="query_results.csv",
-        mime="text/csv"
-    )
+#     #Table download
+#     csv_data = st.session_state["last_df"].to_csv(index=False, encoding="utf-8")
+#     st.download_button(
+#         "Download Table Data (CSV)",
+#         csv_data,
+#         file_name="query_results.csv",
+#         mime="text/csv"
+#     )
     
-    if st.button("Generate Marketing Report"):
-        # 1. Get natural language analysis
-        insights = generate_insights(st.session_state['last_df'], user_query)
-        st.session_state["insights"] = insights
+#     if st.button("Generate Marketing Report"):
+#         # 1. Get natural language analysis
+#         insights = generate_insights(st.session_state['last_df'], user_query)
+#         st.session_state["insights"] = insights
 
-        # 2. Create PDF with insights + table
-        pdf_path = "marketing_report.pdf"
-        generate_report(st.session_state['last_df'], pdf_path)
-        with open(pdf_path, "rb") as f:
-            st.session_state["report_bytes"] = f.read()
+#         # 2. Create PDF with insights + table
+#         pdf_path = "marketing_report.pdf"
+#         generate_report(st.session_state['last_df'], pdf_path)
+#         with open(pdf_path, "rb") as f:
+#             st.session_state["report_bytes"] = f.read()
 
-        # 3. Allow download
-        if st.session_state.get("insights"):
-            st.subheader("Marketing Insights")
-            st.markdown(st.session_state["insights"])
+#         # 3. Allow download
+#         if st.session_state.get("insights"):
+#             st.subheader("Marketing Insights")
+#             st.markdown(st.session_state["insights"])
 
         
 
