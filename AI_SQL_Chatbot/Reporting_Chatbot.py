@@ -109,7 +109,7 @@ def fix_sql_identifiers(sql: str) -> str:
     def replace(match):
         schema, table = match.groups()
         return f'[{schema}].[{table}]'
-
+#comment
     fixed_sql = re.sub(pattern, replace, sql)
     return fixed_sql
 
