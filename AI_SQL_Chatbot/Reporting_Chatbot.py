@@ -12,6 +12,7 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
 from reportlab.lib.styles import getSampleStyleSheet
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from openai import AzureOpenAI
+import pyodbc
 #This file is just to test the connection and a simple query
 # Database connection configuration
 
@@ -20,6 +21,9 @@ api_version = os.getenv("API_VERSION")
 api_key = os.getenv("API_KEY")
 azure_url = os.getenv("AZURE_URL")
 sql_password = os.getenv("MY_SQL_PASSWORD")
+azure_server = os.getenv("AZURE_SYNAPSE_SERVER")
+azure_db = os.getenv("AZURE_SYNAPSE_DB")
+email = os.getenv("EMAIL")
 
 config = {
     'user': 'root',
@@ -29,6 +33,18 @@ config = {
     'database':'Main'
 }
 
+conn_string = (
+    "Driver={ODBC Driver 18 for SQL Server};"
+    f"Server=tcp:{azure_server},1433;"
+    f"Database={azure_db};"
+    "Encrypt=yes;"
+    "TrustServerCertificate=no;"
+    "Connection Timeout=30;"
+    "Authentication=ActiveDirectoryInteractive;"
+    f"UID={email};"
+)
+
+
 client = AzureOpenAI(
     api_version=api_version,
     azure_endpoint=azure_url,
@@ -37,30 +53,31 @@ client = AzureOpenAI(
 
 def get_db_connection():
     try:
-        conn = mysql.connector.connect(**config)
-        cursor = conn.cursor(dictionary=True)
+        conn = pyodbc.connect(conn_string)
+        cursor = conn.cursor()
         print("Database connection established.")
         return conn, cursor
-    except mysql.connector.Error as err:
+    except pyodbc.Error as err:
         print(f"Error: {err}")
         return None, None
 
 def get_schema():
     query = """
         SELECT
+            TABLE_SCHEMA AS table_schema,
             TABLE_NAME   AS table_name,
             COLUMN_NAME  AS column_name,
             DATA_TYPE    AS data_type
         FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = %s
-        ORDER BY TABLE_NAME, ORDINAL_POSITION;
+        WHERE TABLE_SCHEMA IN ('CustomerHub', 'OrderHub')
+        ORDER BY TABLE_SCHEMA, TABLE_NAME, ORDINAL_POSITION;
     """
     
     conn, cursor = get_db_connection()
-    cursor.execute(query, ("Main",))
-    rows = cursor.fetchall()
+    cursor.execute(query)
+    rows = [tuple(row) for row in cursor.fetchall()]
 
-    df = pd.DataFrame(rows, columns=["table_name", "column_name", "data_type"])
+    df = pd.DataFrame(rows, columns=["table_name", "column_name", "data_type", "dtype"])
     #print(df)
     schema_dict = (
             df.groupby("table_name")
@@ -88,7 +105,7 @@ def generate_sql(user_query: str, schema: dict) -> str:
         messages=[
             {
                 "role":"system",
-                "content":f"""You will take the user query in natural language and produce a a SINGLE SQL query using only SELECT statements using MySQLServer syntax."
+                "content":f"""You will take the user query in natural language and produce a a SINGLE SQL query using only SELECT statements using SQL Server query syntax."
                 " This is the table schema: {schema}, and the field is_Pro is either True or False """
             },
             {
@@ -98,7 +115,7 @@ def generate_sql(user_query: str, schema: dict) -> str:
         ],
         temperature=0,
         max_tokens=200,
-        model="chatgpt-4o-latest"
+        model="gpt-4o"
     )
     query = re.sub(r"```sql|```", "", response.choices[0].message.content, flags=re.IGNORECASE).strip() 
     return query
@@ -118,8 +135,9 @@ def run_SQL_query(sql: str) -> pd.DataFrame:
         cursor.execute(sql)
         results = cursor.fetchall()
         df = pd.DataFrame(results)
+        print(df)
         return df
-    except mysql.connector.Error as err:
+    except pyodbc.Error as err:
         print(f"SQL Error: {err}")
         return pd.DataFrame()
     finally:
@@ -150,7 +168,7 @@ def generate_insights(df: pd.DataFrame, user_question: str):
         ],
         temperature=0.6,
         max_tokens=1000,
-        model="chatgpt-4o-latest"
+        model="gpt-4o"
     )
 
     return response.choices[0].message.content.strip()
@@ -168,6 +186,8 @@ def generate_report(df: pd.DataFrame, filename: str):
         flow.append(Paragraph("No Table Data Returned", styles["Normal"]))
     
     doc.build(flow)
+
+#run_SQL_query("SELECT TOP (100) * From CustomerHub.Loyalty")
 
 st.title("On-Demand SQL Reporting Bot")
 st.markdown("Type a natural language question to query your database")
