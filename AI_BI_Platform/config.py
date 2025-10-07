@@ -40,4 +40,4 @@ os.makedirs(REPORTS_DIR, exist_ok=True)
 
 
 # Other settings
-MAX_QUERY_ROWS = int(os.getenv("MAX_QUERY_ROWS", "10000"))
+MAX_QUERY_ROWS = int(os.getenv("MAX_QUERY_ROWS", "100000"))
