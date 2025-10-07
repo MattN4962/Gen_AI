@@ -137,7 +137,7 @@ def generate_sql(user_query: str, schema: dict) -> str:
             }
         ],
         temperature=0,
-        max_tokens=200,
+        max_tokens=500,
         model="gpt-4o"
     )
     query = re.sub(r"```sql|```", "", response.choices[0].message.content, flags=re.IGNORECASE).strip()
@@ -206,7 +206,7 @@ def generate_insights(df: pd.DataFrame, user_question: str):
             {"role": "user", "content": prompt}
         ],
         temperature=0.6,
-        max_tokens=1000,
+        max_tokens=1500,
         model="gpt-4o"
     )
 
