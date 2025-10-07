@@ -48,7 +48,7 @@ client = AzureOpenAI(
     azure_endpoint=azure_url,
     api_key=api_key
 )
-
+#Comment
 def get_db_connection():
     try:
         conn = pyodbc.connect(conn_string)
