@@ -1,3 +1,4 @@
+# Run with pip install requirements.txt in command line
 streamlit
 pandas
 plotly
