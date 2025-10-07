@@ -1,0 +1,21 @@
+streamlit
+pandas
+plotly
+scikit-learn
+reportlab
+python-dotenv
+pyodbc
+openai
+azure-identity
+msal
+sqlalchemy
+requests
+python-pptx
+
+
+gunicorn
+
+
+# optional / future
+# prophet
+# xgboost
