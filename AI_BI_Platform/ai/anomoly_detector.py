@@ -1,0 +1,4 @@
+
+
+class Anomoly_Detector:
+    
