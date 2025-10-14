@@ -83,6 +83,7 @@ def get_schema():
               .apply(lambda g: [f"{col} ({dtype})" for col, dtype in zip(g.column_name, g.data_type)])
               .to_dict()
         )
+    connection_cleanup(conn, cursor)
     return schema_dict
 
 def is_Sql_safe(query: str) -> bool:
@@ -90,11 +91,11 @@ def is_Sql_safe(query: str) -> bool:
     forbidden_keywords = ['DROP', 'DELETE', 'INSERT', 'UPDATE', 'ALTER', 'CREATE', 'TRUNCATE', 'EXEC', 'EXECUTE']
     
     clean_sql = re.sub(r"```sql|```", "", query, flags=re.IGNORECASE).strip()
-
+    #print(clean_sql) 
     # Check for forbidden keywords in the query (case-insensitive)
     if any(word in clean_sql for word in forbidden_keywords):
         return False
-    if not clean_sql.startswith("SELECT") or clean_sql.startswith("WITH"):
+    if not clean_sql.startswith("SELECT") and not clean_sql.startswith("WITH"):
         return False
     return True
 
@@ -118,16 +119,24 @@ def generate_sql(user_query: str, schema: dict) -> str:
     response = client.chat.completions.create(
         messages=[
             {
-                "role":"system",
-                "content":f"""You will take the user query in natural language and produce a a SINGLE SQL query using only SELECT statements using SQL Server query syntax."
-                " This is the table schema: {schema}, and the field is_Pro is either True or False."
-                "When placing brackets around schema and table names, make sure that ONLY table and schema names are in []'s" 
-                "Always ensure joins and filters compare columns of the same data type. "
-                "If joining numeric and string columns, use TRY_CAST on both sides to avoid conversion errors."
-                "If a column has a datetimeoffset data type, always CAST it as DATETIME in the query "
-                "to ensure compatibility with pyodbc and Python."
-                "Only use columns that you know exist in the provided schema. Do NOT assume and columns exist if they are not listed"  
+                "role": "system",
+                "content": f"""
+                You will take the user query in natural language and produce a SINGLE SQL query using only SELECT statements written in SQL Server syntax.
+                Return ONLY the SQL query — no explanations.
+
+                This is the table schema: {schema}
+
+                Important rules:
+                1. Only use columns that exist in the provided schema. Do NOT assume additional columns.
+                2. Prefer columns that contain actual data (non-NULL for most records). Avoid using columns that are known or likely to be NULL for all rows.
+                3. If unsure whether a column contains data, you may exclude it.
+                4. Always ensure joins and filters compare columns of the same data type.
+                5. If joining numeric and string columns, use TRY_CAST on both sides to avoid conversion errors.
+                6. If a column has a datetimeoffset data type, CAST it as DATETIME in the query for pyodbc and Python compatibility.
+                7. If the user’s intent is unclear, focus on returning a valid, meaningful query using non-null, relevant columns only.
+                8. Only use tables with the schema name CustomerHub or OrderHub, use no other tables
                 """
+
             },
             {
                 "role":"user",
@@ -223,9 +232,6 @@ def generate_report(df: pd.DataFrame, filename: str):
         flow.append(Paragraph("No Table Data Returned", styles["Normal"]))
     
     doc.build(flow)
-
-get_db_connection()
-
 
 # schema = get_schema()
 # query = generate_sql("Show me the first 10 Silver loyalty members", schema=schema)
