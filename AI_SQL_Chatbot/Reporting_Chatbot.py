@@ -135,8 +135,8 @@ def generate_sql(user_query: str, schema: dict) -> str:
                 6. If a column has a datetimeoffset data type, CAST it as DATETIME in the query for pyodbc and Python compatibility.
                 7. If the user’s intent is unclear, focus on returning a valid, meaningful query using non-null, relevant columns only.
                 8. Only use tables with the schema name CustomerHub or OrderHub, use no other tables
+                9. If a column has a datetimeoffset or datetime2 data type, CAST it as DATETIME in the query for pyodbc and Python compatibility.
                 """
-
             },
             {
                 "role":"user",
@@ -169,6 +169,12 @@ def run_SQL_query(sql: str) -> pd.DataFrame:
         data = [tuple(row) if not isinstance(row, tuple) else row for row in rows]
         columns = [column[0] for column in cursor.description]
         df = pd.DataFrame(data, columns=columns)
+        
+        for col in df.columns:
+            if df[col].dtype == object:
+                if df[col].astype(str).str.match(r'^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d+$').any():
+                    df[col] = pd.to_datetime(df[col], errors='coerce', utc=False)
+        
         return df
     except pyodbc.Error as err:
         print(f"SQL Error: {err}")
