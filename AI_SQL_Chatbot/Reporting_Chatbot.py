@@ -20,18 +20,9 @@ load_dotenv()
 api_version = os.getenv("API_VERSION")
 api_key = os.getenv("API_KEY")
 azure_url = os.getenv("AZURE_URL")
-sql_password = os.getenv("MY_SQL_PASSWORD")
 azure_server = os.getenv("AZURE_SYNAPSE_SERVER")
 azure_db = os.getenv("AZURE_SYNAPSE_DB")
 email = os.getenv("EMAIL")
-
-config = {
-    'user': 'root',
-    'password': sql_password,
-    'host': 'localhost',
-    'port': 3306,
-    'database':'Main'
-}
 
 conn_string = (
     "Driver={ODBC Driver 18 for SQL Server};"
