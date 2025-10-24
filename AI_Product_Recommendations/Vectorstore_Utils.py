@@ -127,7 +127,7 @@ def query_vectorstore(collection, query_text, top_k=5):
 
 if __name__ == "__main__":
 
-    local_chroma_dir = r"C:\Users\rt1mxn\AppData\Local\Temp"
+    local_chroma_dir = f"{os.getenv("TEMP_FOLDER_BASE")}"
     chroma_folders = [f for f in os.listdir(local_chroma_dir) if f.startswith("chroma") and os.path.isdir(os.path.join(local_chroma_dir, f))]
 
     if not chroma_folders:
@@ -136,6 +136,4 @@ if __name__ == "__main__":
     local_chroma_dir = f"{local_chroma_dir}\\{chroma_folders[0]}"
     collection = load_collection(local_chroma_dir, "Products_Collection")
 
-    query = "I want to build lean muscle and recover faster"
-    query_vectorstore(collection, query)
 
