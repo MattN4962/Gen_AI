@@ -28,7 +28,12 @@ client = AzureOpenAI(
 def download_chroma_from_blob(container_name, blob_prefix):
     print(f"Downloading Vectorstore From Azure Blob {blob_prefix}")
     container_client = blob_service.get_container_client(container_name)
-    temp_dir = tempfile.mkdtemp(prefix="chroma_")
+
+    base_temp = os.getenv("TEMP_FOLDER_BASE", "./temp")
+    temp_dir = os.path.join(base_temp, "chroma_store")
+
+    os.makedirs(temp_dir, exist_ok=True)
+    
     blobs = container_client.list_blobs(name_starts_with=blob_prefix)
     for blob in blobs:
         local_path = os.path.join(temp_dir, os.path.relpath(blob.name, blob_prefix))
@@ -98,7 +103,7 @@ def persist_to_blob(upload_dir="./vector_store/Product_Chroma_Collection/"):
             with open(file_path, "rb") as data:
                 blob_client.upload_blob(data, overwrite=True)
 
-def load_collection(path="./vectorstore/Product_Chroma_Collection/", collection_name="Products_Collection"):
+def load_collection(path=os.getenv("TEMP_FOLDER_BASE"), collection_name="Products_Collection"):
     client = chromadb.PersistentClient(path=path)
     collection_list = client.list_collections()
     collection = client.get_collection(collection_name)
@@ -127,13 +132,9 @@ def query_vectorstore(collection, query_text, top_k=5):
 
 if __name__ == "__main__":
 
-    local_chroma_dir = f"{os.getenv("TEMP_FOLDER_BASE")}"
-    chroma_folders = [f for f in os.listdir(local_chroma_dir) if f.startswith("chroma") and os.path.isdir(os.path.join(local_chroma_dir, f))]
-
-    if not chroma_folders:
+    local_chroma_dir = os.path.join(os.getenv("TEMP_FOLDER_BASE"), "chroma_store")
+    if not os.path.exists(local_chroma_dir):
         local_chroma_dir = download_chroma_from_blob(root_container, blob_prefix)
-
-    local_chroma_dir = f"{local_chroma_dir}\\{chroma_folders[0]}"
     collection = load_collection(local_chroma_dir, "Products_Collection")
 
 
