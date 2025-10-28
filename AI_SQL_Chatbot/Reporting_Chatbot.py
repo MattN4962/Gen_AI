@@ -229,69 +229,61 @@ def generate_report(df: pd.DataFrame, filename: str):
         flow.append(Paragraph("No Table Data Returned", styles["Normal"]))
     
     doc.build(flow)
+get_db_connection()
 
-# schema = get_schema()
-# query = generate_sql("Show me the first 10 Silver loyalty members", schema=schema)
-# print(query)
+# st.title("On-Demand SQL Reporting Bot")
+# st.markdown("Type a natural language question to query your database")
 
-# df = run_SQL_query(query)
-# print(df)
-# some comment
+# st.session_state.setdefault("last_df", None)
+# st.session_state.setdefault("insighs", None)
+# st.session_state.setdefault("reporting_bytes", None)
 
-st.title("On-Demand SQL Reporting Bot")
-st.markdown("Type a natural language question to query your database")
+# user_query = st.text_area("Enter your question")
 
-
-st.session_state.setdefault("last_df", None)
-st.session_state.setdefault("insighs", None)
-st.session_state.setdefault("reporting_bytes", None)
-
-user_query = st.text_area("Enter your question")
-
-if st.button("Run Query"):
-    schema = get_schema()
-    if not schema:
-        st.error("Unable to get schema")
-    else:
-        sql = generate_sql(user_query=user_query, schema=schema)
-        st.code(sql, language="sql")
+# if st.button("Run Query"):
+#     schema = get_schema()
+#     if not schema:
+#         st.error("Unable to get schema")
+#     else:
+#         sql = generate_sql(user_query=user_query, schema=schema)
+#         st.code(sql, language="sql")
         
-        df = run_SQL_query(sql=sql)
-        if not df.empty:
-            st.session_state["last_df"] = df
-            st.session_state["insights"] = None
-            st.session_state["report_bytes"] = None
-        else:
-            st.warning("No results found or unsafe query")
+#         df = run_SQL_query(sql=sql)
+#         if not df.empty:
+#             st.session_state["last_df"] = df
+#             st.session_state["insights"] = None
+#             st.session_state["report_bytes"] = None
+#         else:
+#             st.warning("No results found or unsafe query")
 
-if st.session_state['last_df'] is not None and not st.session_state['last_df'].empty:
-    st.subheader("Query Results")
-    st.dataframe(st.session_state["last_df"])
+# if st.session_state['last_df'] is not None and not st.session_state['last_df'].empty:
+#     st.subheader("Query Results")
+#     st.dataframe(st.session_state["last_df"])
 
-    #Table download
-    csv_data = st.session_state["last_df"].to_csv(index=False, encoding="utf-8")
-    st.download_button(
-        "Download Table Data (CSV)",
-        csv_data,
-        file_name="query_results.csv",
-        mime="text/csv"
-    )
+#     #Table download
+#     csv_data = st.session_state["last_df"].to_csv(index=False, encoding="utf-8")
+#     st.download_button(
+#         "Download Table Data (CSV)",
+#         csv_data,
+#         file_name="query_results.csv",
+#         mime="text/csv"
+#     )
     
-    if st.button("Generate Marketing Report"):
-        # 1. Get natural language analysis
-        insights = generate_insights(st.session_state['last_df'], user_query)
-        st.session_state["insights"] = insights
+#     if st.button("Generate Marketing Report"):
+#         # 1. Get natural language analysis
+#         insights = generate_insights(st.session_state['last_df'], user_query)
+#         st.session_state["insights"] = insights
 
-        # 2. Create PDF with insights + table
-        pdf_path = "marketing_report.pdf"
-        generate_report(st.session_state['last_df'], pdf_path)
-        with open(pdf_path, "rb") as f:
-            st.session_state["report_bytes"] = f.read()
+#         # 2. Create PDF with insights + table
+#         pdf_path = "marketing_report.pdf"
+#         generate_report(st.session_state['last_df'], pdf_path)
+#         with open(pdf_path, "rb") as f:
+#             st.session_state["report_bytes"] = f.read()
 
-        # 3. Allow download
-        if st.session_state.get("insights"):
-            st.subheader("Marketing Insights")
-            st.markdown(st.session_state["insights"])
+#         # 3. Allow download
+#         if st.session_state.get("insights"):
+#             st.subheader("Marketing Insights")
+#             st.markdown(st.session_state["insights"])
 
         
 
