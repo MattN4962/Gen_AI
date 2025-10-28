@@ -26,7 +26,11 @@ def diversify_results(results, max_per_product=2):
     diversified = []
 
     for res in results:
-        product = res["Display Name"]
+        if isinstance(res, dict):
+            product = res.get("Display Name", None)
+        elif isinstance(res, str):
+            product = res
+        
         if product not in seen:
             seen[product] = 0
         if seen[product] < max_per_product:
@@ -70,7 +74,7 @@ async def generate_regimen(request: QueryRequest):
         category = parts[3] if len(parts) > 0 else "No Data"
         products.append(f"{display_name} ({category})")
     
-    #diversify_results(products, max_per_product=3)
+    diversify_results(products, max_per_product=3)
 
     #Generate Regimen with GPT
     product_context = "\n".join(products)
