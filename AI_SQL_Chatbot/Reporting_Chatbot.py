@@ -236,6 +236,7 @@ def generate_report(df: pd.DataFrame, filename: str):
 
 # df = run_SQL_query(query)
 # print(df)
+# some comment
 
 st.title("On-Demand SQL Reporting Bot")
 st.markdown("Type a natural language question to query your database")
