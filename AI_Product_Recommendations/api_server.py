@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from Vectorstore_Utils import load_collection, query_vectorstore, download_chroma_from_blob
+from Vectorstore_Utils import initialize_vectorstore, query_vectorstore
 from openai import AzureOpenAI
 import os
 from dotenv import load_dotenv
@@ -10,18 +10,16 @@ load_dotenv()
 
 app = FastAPI(title="GNC Fitness GPT")
 
-VECTORSTORE_PATH = os.getenv("TEMP_FOLDER_BASE")
-COLLECTION_NAME = "Products_Collection"
-
-print(f"Loading Chroma Store from: {VECTORSTORE_PATH}")
-collection = load_collection(path=VECTORSTORE_PATH, collection_name=COLLECTION_NAME)
+print("Initializing vectorstore...")
+collection, local_chroma_dir = initialize_vectorstore()
+print(f"Vectorstore initialized successfully with {collection.count()} embeddings")
 
 # Request Body Model
 class QueryRequest(BaseModel):
     query: str
     top_k: int = 5
 
-def diversify_results(results, max_per_product=2):
+def diversify_results(results, max_per_product=1):
     seen = {}
     diversified = []
 
@@ -74,7 +72,7 @@ async def generate_regimen(request: QueryRequest):
         category = parts[3] if len(parts) > 0 else "No Data"
         products.append(f"{display_name} ({category})")
     
-    diversify_results(products, max_per_product=3)
+    diversify_results(products, max_per_product=1)
 
     #Generate Regimen with GPT
     product_context = "\n".join(products)
@@ -83,9 +81,53 @@ async def generate_regimen(request: QueryRequest):
         Based on these available products:
         {product_context}
 
-        Create a clear, structured daily plan using these products.
+        Create a clear, structured daily plan using these products in JSON format.
+        
+        Use this exact JSON structure:
+        {{
+            "title": "Brief title for the regimen",
+            "schedule": {{
+                "morning": [
+                    {{
+                        "product_name": "PRODUCT NAME",
+                        "dosage": "dosage instructions",
+                        "rationale": "why this product at this time"
+                    }}
+                ],
+                "pre_workout": [
+                    {{
+                        "product_name": "PRODUCT NAME",
+                        "dosage": "dosage instructions",
+                        "rationale": "why this product at this time",
+                        "timing_note": "optional note like 'or mid-morning if not exercising'"
+                    }}
+                ],
+                "post_workout": [
+                    {{
+                        "product_name": "PRODUCT NAME",
+                        "dosage": "dosage instructions",
+                        "rationale": "why this product at this time",
+                        "timing_note": "optional note like 'or afternoon'"
+                    }}
+                ],
+                "evening": [
+                    {{
+                        "product_name": "PRODUCT NAME",
+                        "dosage": "dosage instructions",
+                        "rationale": "why this product at this time"
+                    }}
+                ]
+            }},
+            "additional_notes": [
+                "Important note 1",
+                "Important note 2"
+            ],
+            "summary": "Brief summary of the regimen benefits"
+        }}
+        
         Include timing(morning, pre-workout, post-workout, evening), dosage guidance, and rationale.
-        Keep the explanation minimal and only provide necessary information - this may be used in a store setting by an associate 
+        Keep the explanation minimal and only provide necessary information - this may be used in a store setting by an associate.
+        Return ONLY valid JSON, no other text.
         """
 
         # Define Open AI connection
@@ -98,17 +140,21 @@ async def generate_regimen(request: QueryRequest):
     llm_response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
-            {"role": "system", "content": "You are an expert fitness and supplement advisor."},
+            {"role": "system", "content": "You are an expert fitness and supplement advisor. Always respond with valid JSON only."},
             {"role": "user", "content": prompt}
         ],
+        response_format={"type": "json_object"},
         temperature=0.3,
-        max_tokens=600
+        max_tokens=800
     )
 
-    regimen = llm_response.choices[0].message.content
+    regimen_json = llm_response.choices[0].message.content
+    
+    import json
+    regimen_data = json.loads(regimen_json)
 
     return {
         "query": request.query,
         "products": products,
-        "regimen": regimen
+        "regimen": regimen_data
     }
